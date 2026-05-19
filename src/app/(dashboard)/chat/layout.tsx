@@ -1,0 +1,47 @@
+import { createClient } from "@/lib/supabase/server";
+import Link from "next/link";
+import { MessageSquare, Hash } from "lucide-react";
+import CreateRoomButton from "@/components/chat/CreateRoomButton";
+
+export default async function ChatLayout({ children }: { children: React.ReactNode }) {
+  const supabase = await createClient();
+  
+  // Create default rooms if they don't exist
+  const { data: rooms } = await supabase.from("chat_rooms").select("*").order("created_at", { ascending: true });
+
+  return (
+    <div className="flex h-full overflow-hidden bg-background">
+      {/* Rooms Sidebar */}
+      <div className="w-64 border-r border-border/50 bg-muted/10 flex flex-col hidden md:flex">
+        <div className="p-4 border-b border-border/50 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <MessageSquare className="w-5 h-5 text-primary" />
+            <h2 className="font-bold">Chat Rooms</h2>
+          </div>
+          <CreateRoomButton />
+        </div>
+        <div className="flex-1 overflow-y-auto p-3 space-y-1">
+          {rooms?.length === 0 ? (
+            <p className="text-sm text-muted-foreground p-2">No rooms available.</p>
+          ) : (
+            rooms?.map(room => (
+              <Link 
+                key={room.id} 
+                href={`/chat/${room.id}`}
+                className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-muted transition-colors text-sm font-medium"
+              >
+                <Hash className="w-4 h-4 text-muted-foreground" />
+                {room.room_name}
+              </Link>
+            ))
+          )}
+        </div>
+      </div>
+
+      {/* Main Chat Area */}
+      <div className="flex-1 flex flex-col relative">
+        {children}
+      </div>
+    </div>
+  );
+}
