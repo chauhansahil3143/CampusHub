@@ -30,7 +30,14 @@ export default function ChatRoomClient({
 }) {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [newMessage, setNewMessage] = useState("");
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const supabase = createClient();
+
+  const popularEmojis = [
+    "😀", "😂", "🤣", "😊", "😍", "🥰", "😎", "😜", "👍", "🔥", 
+    "🙌", "🎉", "❤️", "✨", "💯", "🚀", "🤔", "👀", "👏", "😭", 
+    "🙏", "💡", "😅", "⚡️", "💻", "🎓", "📚", "📝", "🏫", "🌟"
+  ];
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -136,18 +143,48 @@ export default function ChatRoomClient({
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="p-4 border-t border-border/50 bg-background">
-        <form onSubmit={handleSendMessage} className="flex gap-2">
-          <Button type="button" variant="ghost" size="icon" className="shrink-0 text-muted-foreground rounded-full">
+      <div className="p-4 border-t border-border/50 bg-background relative">
+        {showEmojiPicker && (
+          <div className="absolute bottom-16 left-4 bg-card border border-border p-3 rounded-2xl shadow-xl z-50 w-64 max-w-[calc(100vw-32px)]">
+            <div className="grid grid-cols-6 gap-2">
+              {popularEmojis.map((emoji) => (
+                <button
+                  key={emoji}
+                  type="button"
+                  onClick={() => {
+                    setNewMessage((prev) => prev + emoji);
+                  }}
+                  className="text-xl p-1.5 hover:bg-muted rounded-lg transition-colors flex items-center justify-center"
+                >
+                  {emoji}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+        <form 
+          onSubmit={(e) => {
+            handleSendMessage(e);
+            setShowEmojiPicker(false);
+          }} 
+          className="flex items-center gap-2"
+        >
+          <Button 
+            type="button" 
+            variant="ghost" 
+            size="icon" 
+            onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+            className={`shrink-0 rounded-full h-10 w-10 ${showEmojiPicker ? 'text-primary bg-primary/10' : 'text-muted-foreground hover:bg-muted'}`}
+          >
             <Smile className="w-5 h-5" />
           </Button>
           <Input 
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             placeholder="Type a message..."
-            className="flex-1 rounded-full bg-muted/50 border-transparent focus-visible:ring-1"
+            className="flex-1 rounded-full h-10 bg-muted/20 border border-border/80 focus-visible:ring-primary/20 focus-visible:border-primary focus:border-primary transition-all px-4"
           />
-          <Button type="submit" size="icon" className="shrink-0 rounded-full" disabled={!newMessage.trim()}>
+          <Button type="submit" size="icon" className="shrink-0 h-10 w-10 rounded-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-md transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center" disabled={!newMessage.trim()}>
             <Send className="w-4 h-4" />
           </Button>
         </form>

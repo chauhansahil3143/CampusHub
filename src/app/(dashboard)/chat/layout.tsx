@@ -40,9 +40,9 @@ export default async function ChatLayout({ children }: { children: React.ReactNo
   );
 
   return (
-    <div className="flex h-full overflow-hidden bg-background">
+    <div className="fixed inset-x-0 top-[57px] bottom-[88px] md:relative md:inset-auto md:w-full md:h-full flex overflow-hidden bg-background">
       {/* Rooms Sidebar */}
-      <div className="w-64 border-r border-border/50 bg-muted/10 flex flex-col hidden md:flex">
+      <div className="w-64 border-r border-border/30 bg-card/45 backdrop-blur-md flex flex-col hidden md:flex">
         <div className="p-4 border-b border-border/50 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <MessageSquare className="w-5 h-5 text-primary" />
@@ -58,7 +58,7 @@ export default async function ChatLayout({ children }: { children: React.ReactNo
               <Link 
                 key={room.id} 
                 href={`/chat/${room.id}`}
-                className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-muted transition-colors text-sm font-medium"
+                className="flex items-center gap-2 px-3.5 py-2.5 rounded-xl hover:bg-muted/50 transition-all text-sm font-semibold"
               >
                 <Hash className="w-4 h-4 text-muted-foreground" />
                 {room.room_name}

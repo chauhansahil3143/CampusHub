@@ -347,7 +347,7 @@ export default function UnifiedUploadPage() {
               </div>
             </div>
 
-            <Button type="submit" className="w-full h-12 text-lg" disabled={loading}>
+            <Button type="submit" className="w-full h-12 text-lg bg-gradient-to-r from-primary to-indigo-600 hover:from-primary/95 hover:to-indigo-500 text-white font-bold rounded-2xl shadow-lg shadow-primary/20 transition-all hover:scale-[1.01]" disabled={loading}>
               {loading ? "Uploading..." : `Upload ${type === "notes" ? "Notes" : type === "books" ? "Book" : "PYQ"}`}
             </Button>
           </form>

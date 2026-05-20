@@ -15,24 +15,42 @@ export default function OnboardingPage() {
   const [semester, setSemester] = useState("");
   const [branch, setBranch] = useState("");
   const [file, setFile] = useState<File | null>(null);
+  const [existingAvatarUrl, setExistingAvatarUrl] = useState<string | null>(null);
+  const [isEditMode, setIsEditMode] = useState(false);
   
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    // Check if already onboarded
-    const checkUser = async () => {
+    const fetchUserData = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        const { data } = await supabase.from("users").select("semester").eq("id", user.id).single();
-        if (data?.semester) {
-          router.push("/dashboard");
+        const { data } = await supabase
+          .from("users")
+          .select("semester, branch, avatar_url")
+          .eq("id", user.id)
+          .single();
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const isEditing = urlParams.get("edit") === "true";
+        setIsEditMode(isEditing);
+
+        if (data) {
+          if (data.avatar_url) {
+            setExistingAvatarUrl(data.avatar_url);
+          }
+          if (isEditing) {
+            setSemester(data.semester?.toString() || "");
+            setBranch(data.branch || "");
+          } else if (data.semester) {
+            router.push("/dashboard");
+          }
         }
       }
     };
-    checkUser();
-  }, []);
+    fetchUserData();
+  }, [supabase, router]);
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,7 +96,7 @@ export default function OnboardingPage() {
 
       setSuccess(true);
       setTimeout(() => {
-        router.push("/dashboard");
+        router.push(isEditMode ? "/profile" : "/dashboard");
         router.refresh();
       }, 1500);
 
@@ -90,11 +108,20 @@ export default function OnboardingPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <Card className="w-full max-w-lg shadow-xl border-border/50">
+    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Background gradients */}
+      <div className="absolute inset-0 -z-10 h-full w-full bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.15),rgba(255,255,255,0))]"></div>
+      
+      <Card className="w-full max-w-lg bg-card/45 backdrop-blur-md border border-border rounded-3xl shadow-2xl relative">
         <CardHeader>
-          <CardTitle className="text-2xl">Complete your profile</CardTitle>
-          <CardDescription>Tell us a bit about yourself so we can personalize your CampusHub experience.</CardDescription>
+          <CardTitle className="text-2xl font-bold">
+            {isEditMode ? "Edit your profile" : "Complete your profile"}
+          </CardTitle>
+          <CardDescription>
+            {isEditMode 
+              ? "Update your student profile details and custom avatar photo."
+              : "Tell us a bit about yourself so we can personalize your CampusHub experience."}
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSave} className="space-y-6">
@@ -108,16 +135,18 @@ export default function OnboardingPage() {
             {success && (
               <div className="p-3 bg-green-500/10 text-green-600 rounded-lg flex items-center gap-2 text-sm">
                 <CheckCircle2 className="w-4 h-4 shrink-0" />
-                <span>Profile saved! Redirecting...</span>
+                <span>{isEditMode ? "Profile updated! Redirecting..." : "Profile saved! Redirecting..."}</span>
               </div>
             )}
 
             <div className="space-y-2">
               <label className="text-sm font-medium">Profile Photo (Optional)</label>
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center border border-border overflow-hidden">
+                <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center border border-border overflow-hidden shrink-0">
                   {file ? (
                     <img src={URL.createObjectURL(file)} alt="Preview" className="w-full h-full object-cover" />
+                  ) : existingAvatarUrl ? (
+                    <img src={existingAvatarUrl} alt="Preview" className="w-full h-full object-cover" />
                   ) : (
                     <Upload className="w-6 h-6 text-muted-foreground" />
                   )}
@@ -155,7 +184,7 @@ export default function OnboardingPage() {
             </div>
 
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Saving..." : "Save and Continue"}
+              {loading ? "Saving..." : (isEditMode ? "Save Profile" : "Save and Continue")}
             </Button>
           </form>
         </CardContent>

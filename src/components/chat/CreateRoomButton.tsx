@@ -107,12 +107,12 @@ export default function CreateRoomButton() {
 
               <div className="space-y-2">
                 <label className="text-sm font-medium">Channel Name</label>
-                <div className="relative">
-                  <span className="absolute left-3 top-3 text-muted-foreground font-semibold">#</span>
+                <div className="relative flex items-center">
+                  <span className="absolute left-3 text-muted-foreground font-semibold pointer-events-none select-none">#</span>
                   <Input 
                     type="text" 
                     placeholder="e.g. general-chat" 
-                    className="pl-8" 
+                    className="pl-8 w-full" 
                     value={roomName}
                     onChange={(e) => setRoomName(e.target.value)}
                     required

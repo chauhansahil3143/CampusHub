@@ -70,11 +70,13 @@ export default function BookmarkButton({
       variant="ghost" 
       size="icon" 
       onClick={toggleBookmark}
-      className="h-8 w-8 rounded-full hover:bg-muted"
+      className={`h-9 w-9 rounded-xl border shadow-sm flex items-center justify-center shrink-0 transition-all ${
+        isBookmarked ? "border-primary/40 bg-primary/5 text-primary" : "border-border bg-background/50 hover:bg-muted text-muted-foreground hover:text-foreground"
+      }`}
       disabled={loading}
     >
       <Bookmark className={`w-4 h-4 transition-colors ${
-        isBookmarked ? "fill-primary text-primary" : "text-muted-foreground"
+        isBookmarked ? "fill-primary text-primary" : ""
       }`} />
     </Button>
   );

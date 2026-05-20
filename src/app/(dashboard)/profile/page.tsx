@@ -87,12 +87,14 @@ export default async function ProfilePage() {
   }).filter(Boolean);
 
   return (
-    <div className="container max-w-4xl mx-auto px-4 py-12">
+    <div className="container max-w-5xl mx-auto px-4 py-8 relative overflow-hidden">
+      {/* Background gradients */}
+      <div className="absolute inset-0 -z-10 h-full w-full bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.12),rgba(255,255,255,0))]"></div>
       <div className="flex flex-col md:flex-row gap-8">
         
         {/* Profile Sidebar */}
         <div className="w-full md:w-1/3 space-y-6">
-          <Card className="border-border/50 shadow-sm text-center pt-8">
+          <Card className="bg-card/45 backdrop-blur-md border border-border/30 shadow-sm text-center pt-8 rounded-2xl">
             <div className="w-24 h-24 mx-auto rounded-full bg-primary/10 text-primary flex items-center justify-center text-3xl font-bold mb-4 overflow-hidden border-4 border-background shadow-lg">
               {profile?.avatar_url ? (
                 <img src={profile.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
@@ -117,13 +119,13 @@ export default async function ProfilePage() {
                 <GraduationCap className="w-4 h-4 shrink-0" />
                 <span className="text-sm truncate">{profile?.branch || "Branch not specified"}</span>
               </div>
-              <a href="/onboarding" className={buttonVariants({ variant: "outline", className: "w-full mt-4" })}>
+              <a href="/onboarding?edit=true" className={buttonVariants({ variant: "outline", className: "w-full mt-4" })}>
                 Edit Profile
               </a>
             </CardContent>
           </Card>
 
-          <Card className="border-border/50 shadow-sm">
+          <Card className="bg-card/45 backdrop-blur-md border border-border/30 shadow-sm rounded-2xl">
             <CardHeader>
               <CardTitle className="text-lg">Achievements</CardTitle>
             </CardHeader>
@@ -155,7 +157,7 @@ export default async function ProfilePage() {
           ) : (
             <div className="grid gap-4">
               {allUploads.map((item: any) => (
-                <div key={item.id} className="p-4 rounded-xl border border-border/50 bg-card flex justify-between items-center group hover:border-primary/50 transition-colors">
+                <div key={item.id} className="p-4 rounded-xl border border-border/30 bg-card/40 backdrop-blur-sm flex justify-between items-center group hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300">
                   <div>
                     <div className="flex items-center gap-2 mb-1">
                       <h4 className="font-medium group-hover:text-primary transition-colors">{item.title || item.subject}</h4>
@@ -188,7 +190,7 @@ export default async function ProfilePage() {
               <div className="grid gap-4">
                 {formattedBookmarks.map((bookmark: any) => {
                   return (
-                    <div key={bookmark.id} className="p-4 rounded-xl border border-border/50 bg-card flex justify-between items-center group hover:border-primary/50 transition-colors">
+                    <div key={bookmark.id} className="p-4 rounded-xl border border-border/30 bg-card/40 backdrop-blur-sm flex justify-between items-center group hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300">
                       <div>
                         <div className="flex items-center gap-2 mb-1">
                           <h4 className="font-medium group-hover:text-primary transition-colors">{bookmark.title || bookmark.subject}</h4>

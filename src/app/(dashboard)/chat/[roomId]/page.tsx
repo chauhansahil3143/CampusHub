@@ -3,6 +3,8 @@ import ChatRoomClient from "@/components/chat/ChatRoomClient";
 import { notFound } from "next/navigation";
 import ShareRoomButton from "@/components/chat/ShareRoomButton";
 import DeleteRoomButton from "@/components/chat/DeleteRoomButton";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 
 export default async function ChatRoomPage({ params }: { params: Promise<{ roomId: string }> }) {
   const { roomId } = await params;
@@ -50,7 +52,12 @@ export default async function ChatRoomPage({ params }: { params: Promise<{ roomI
   return (
     <div className="flex flex-col h-full bg-background relative">
       <div className="p-4 border-b border-border/50 bg-background/80 backdrop-blur-md z-10 flex items-center justify-between">
-        <h2 className="font-bold text-lg"># {room.room_name}</h2>
+        <div className="flex items-center gap-2">
+          <Link href="/chat" className="md:hidden p-1.5 hover:bg-muted rounded-lg transition-colors text-muted-foreground mr-1">
+            <ArrowLeft className="w-5 h-5" />
+          </Link>
+          <h2 className="font-bold text-lg"># {room.room_name}</h2>
+        </div>
         <div className="flex items-center gap-2">
           {room.created_by === user.id && (
             <DeleteRoomButton roomId={roomId} roomName={room.room_name} />
