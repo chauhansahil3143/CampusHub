@@ -36,18 +36,27 @@ export default function CreateRoomButton() {
         .from("chat_rooms")
         .insert({
           room_name: formattedName,
-          created_by: user.id
+          created_by: user.id,
+          is_private: true
         })
         .select()
         .single();
 
       if (dbError) throw dbError;
 
-      setIsOpen(false);
-      setRoomName("");
-      
-      // Redirect to the newly created room
+      // Add creator to room_members
       if (data) {
+        const { error: memberError } = await supabase
+          .from("room_members")
+          .insert({
+            room_id: data.id,
+            user_id: user.id
+          });
+        
+        if (memberError) throw memberError;
+
+        setIsOpen(false);
+        setRoomName("");
         router.push(`/chat/${data.id}`);
         router.refresh();
       }

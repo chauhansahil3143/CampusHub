@@ -7,7 +7,37 @@ export default async function ChatLayout({ children }: { children: React.ReactNo
   const supabase = await createClient();
   
   // Create default rooms if they don't exist
-  const { data: rooms } = await supabase.from("chat_rooms").select("*").order("created_at", { ascending: true });
+  const { data: { user } } = await supabase.auth.getUser();
+  
+  // 1. Fetch public rooms
+  const { data: publicRooms } = await supabase
+    .from("chat_rooms")
+    .select("*")
+    .eq("is_private", false)
+    .order("created_at", { ascending: true });
+
+  // 2. Fetch rooms where user is a member
+  let joinedRooms: any[] = [];
+  if (user) {
+    const { data: memberRecords } = await supabase
+      .from("room_members")
+      .select("chat_rooms(*)")
+      .eq("user_id", user.id);
+    
+    joinedRooms = (memberRecords || [])
+      .map((r: any) => r.chat_rooms)
+      .filter(Boolean);
+  }
+
+  // 3. Merge and deduplicate
+  const allRoomsMap = new Map();
+  [...(publicRooms || []), ...joinedRooms].forEach(room => {
+    allRoomsMap.set(room.id, room);
+  });
+  
+  const rooms = Array.from(allRoomsMap.values()).sort(
+    (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+  );
 
   return (
     <div className="flex h-full overflow-hidden bg-background">

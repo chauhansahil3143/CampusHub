@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import ChatRoomClient from "@/components/chat/ChatRoomClient";
 import { notFound } from "next/navigation";
 import ShareRoomButton from "@/components/chat/ShareRoomButton";
+import DeleteRoomButton from "@/components/chat/DeleteRoomButton";
 
 export default async function ChatRoomPage({ params }: { params: Promise<{ roomId: string }> }) {
   const { roomId } = await params;
@@ -21,6 +22,23 @@ export default async function ChatRoomPage({ params }: { params: Promise<{ roomI
     return notFound();
   }
 
+  // Automatically join the room if not already a member
+  const { data: membership } = await supabase
+    .from("room_members")
+    .select("id")
+    .eq("room_id", roomId)
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (!membership) {
+    await supabase
+      .from("room_members")
+      .insert({
+        room_id: roomId,
+        user_id: user.id
+      });
+  }
+
   // Get initial messages
   const { data: initialMessages } = await supabase
     .from("messages")
@@ -33,7 +51,12 @@ export default async function ChatRoomPage({ params }: { params: Promise<{ roomI
     <div className="flex flex-col h-full bg-background relative">
       <div className="p-4 border-b border-border/50 bg-background/80 backdrop-blur-md z-10 flex items-center justify-between">
         <h2 className="font-bold text-lg"># {room.room_name}</h2>
-        <ShareRoomButton roomId={roomId} roomName={room.room_name} />
+        <div className="flex items-center gap-2">
+          {room.created_by === user.id && (
+            <DeleteRoomButton roomId={roomId} roomName={room.room_name} />
+          )}
+          <ShareRoomButton roomId={roomId} roomName={room.room_name} />
+        </div>
       </div>
       
       <ChatRoomClient 

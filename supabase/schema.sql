@@ -137,6 +137,7 @@ ALTER TABLE public.messages ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Rooms are viewable by everyone." ON public.chat_rooms FOR SELECT USING (true);
 CREATE POLICY "Authenticated users can create rooms." ON public.chat_rooms FOR INSERT WITH CHECK (auth.uid() IS NOT NULL);
+CREATE POLICY "Creators can delete their own rooms." ON public.chat_rooms FOR DELETE USING (auth.uid() = created_by);
 CREATE POLICY "Messages are viewable by everyone." ON public.messages FOR SELECT USING (true);
 CREATE POLICY "Authenticated users can insert messages." ON public.messages FOR INSERT WITH CHECK (auth.uid() = sender_id);
 
