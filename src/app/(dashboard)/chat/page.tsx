@@ -36,12 +36,12 @@ export default async function ChatIndexPage() {
   );
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-background relative overflow-hidden">
+    <div className="flex-1 flex flex-col bg-background relative overflow-hidden">
       {/* Background gradients */}
       <div className="absolute inset-0 -z-10 h-full w-full bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.1),rgba(255,255,255,0))]"></div>
 
       {/* Mobile-only view: Rooms list */}
-      <div className="md:hidden flex flex-col h-full p-4">
+      <div className="md:hidden flex flex-col flex-1 p-4 overflow-hidden">
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
@@ -79,7 +79,7 @@ export default async function ChatIndexPage() {
       </div>
 
       {/* Desktop-only placeholder */}
-      <div className="hidden md:flex flex-col items-center justify-center h-full">
+      <div className="hidden md:flex flex-col items-center justify-center flex-1">
         <div className="w-16 h-16 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-4">
           <MessageSquare className="w-8 h-8" />
         </div>

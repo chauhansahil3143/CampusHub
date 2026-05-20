@@ -7,6 +7,10 @@ import { Home, BookOpen, MessageSquare, User } from "lucide-react";
 export default function MobileNav() {
   const pathname = usePathname();
 
+  // Hide MobileNav on individual chat room pages
+  const isChatRoom = /^\/chat\/[a-zA-Z0-9-]+$/.test(pathname);
+  if (isChatRoom) return null;
+
   const links = [
     { name: "Home", href: "/dashboard", icon: Home },
     { name: "Library", href: "/study-material", icon: BookOpen },

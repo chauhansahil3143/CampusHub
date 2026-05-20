@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { UploadCloud, FileType, CheckCircle2, AlertCircle } from "lucide-react";
-import { motion } from "framer-motion";
 
 export default function UploadNotePage() {
   const router = useRouter();
@@ -43,9 +42,12 @@ export default function UploadNotePage() {
       const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
       const filePath = `${user.id}/${fileName}`;
 
-      const { error: uploadError, data: uploadData } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from('notes')
-        .upload(filePath, file);
+        .upload(filePath, file, {
+          contentType: 'application/pdf',
+          upsert: false
+        });
 
       if (uploadError) throw uploadError;
 

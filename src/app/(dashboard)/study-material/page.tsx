@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import StudyMaterialSearch from "@/components/study-material/StudyMaterialSearch";
 import BookmarkButton from "@/components/notes/BookmarkButton";
+import PdfPreview from "@/components/study-material/PdfPreview";
 
 export default async function StudyMaterialPage({ searchParams }: { searchParams: Promise<{ tab?: string; q?: string; sem?: string; subject?: string }> }) {
   const { tab = "notes", q = "", sem = "", subject = "" } = await searchParams;
@@ -170,14 +171,7 @@ export default async function StudyMaterialPage({ searchParams }: { searchParams
                         {note.thumbnail_url ? (
                           <img src={note.thumbnail_url} alt={note.title} className="object-cover w-full h-full" />
                         ) : note.pdf_url ? (
-                          <div className="w-full h-full relative overflow-hidden select-none bg-background flex items-center justify-center">
-                            <iframe 
-                              src={`https://docs.google.com/gview?url=${encodeURIComponent(note.pdf_url)}&embedded=true`} 
-                              className="w-[110%] h-[160%] absolute -top-[5%] -left-[5%] border-none pointer-events-none origin-top"
-                              title={note.title}
-                            />
-                            <div className="absolute inset-0 bg-transparent" />
-                          </div>
+                          <PdfPreview url={note.pdf_url} title={note.title} />
                         ) : (
                           <div className="w-full h-full bg-gradient-to-br from-card to-background p-4 flex flex-col justify-between relative select-none">
                             {/* PDF Watermark / Header */}
@@ -259,14 +253,7 @@ export default async function StudyMaterialPage({ searchParams }: { searchParams
                     <div key={book.id} className="group relative bg-card border border-border rounded-2xl overflow-hidden hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between h-full">
                       <div className="aspect-video bg-muted flex items-center justify-center relative overflow-hidden border-b border-border/30">
                         {book.pdf_url ? (
-                          <div className="w-full h-full relative overflow-hidden select-none bg-background flex items-center justify-center">
-                            <iframe 
-                              src={`https://docs.google.com/gview?url=${encodeURIComponent(book.pdf_url)}&embedded=true`} 
-                              className="w-[110%] h-[160%] absolute -top-[5%] -left-[5%] border-none pointer-events-none origin-top"
-                              title={book.title}
-                            />
-                            <div className="absolute inset-0 bg-transparent" />
-                          </div>
+                          <PdfPreview url={book.pdf_url} title={book.title} />
                         ) : (
                           <div className="w-full h-full bg-gradient-to-br from-card to-background p-4 flex flex-col justify-between relative select-none">
                             <div className="flex justify-between items-center text-[10px] text-muted-foreground/60 border-b border-border/30 pb-2">
@@ -338,14 +325,7 @@ export default async function StudyMaterialPage({ searchParams }: { searchParams
                     <div key={pyq.id} className="group relative bg-card border border-border rounded-2xl overflow-hidden hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between h-full">
                       <div className="aspect-video bg-muted flex items-center justify-center relative overflow-hidden border-b border-border/30">
                         {pyq.pdf_url ? (
-                          <div className="w-full h-full relative overflow-hidden select-none bg-background flex items-center justify-center">
-                            <iframe 
-                              src={`https://docs.google.com/gview?url=${encodeURIComponent(pyq.pdf_url)}&embedded=true`} 
-                              className="w-[110%] h-[160%] absolute -top-[5%] -left-[5%] border-none pointer-events-none origin-top"
-                              title={pyq.subject}
-                            />
-                            <div className="absolute inset-0 bg-transparent" />
-                          </div>
+                          <PdfPreview url={pyq.pdf_url} title={pyq.subject} />
                         ) : (
                           <div className="w-full h-full bg-gradient-to-br from-card to-background p-4 flex flex-col justify-between relative select-none">
                             <div className="flex justify-between items-center text-[10px] text-muted-foreground/60 border-b border-border/30 pb-2">

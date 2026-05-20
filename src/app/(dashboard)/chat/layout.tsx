@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { MessageSquare, Hash } from "lucide-react";
 import CreateRoomButton from "@/components/chat/CreateRoomButton";
+import ChatLayoutContainer from "@/components/chat/ChatLayoutContainer";
 
 export default async function ChatLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient();
@@ -40,7 +41,7 @@ export default async function ChatLayout({ children }: { children: React.ReactNo
   );
 
   return (
-    <div className="fixed inset-x-0 top-[57px] bottom-[88px] md:relative md:inset-auto md:w-full md:h-full flex overflow-hidden bg-background">
+    <ChatLayoutContainer>
       {/* Rooms Sidebar */}
       <div className="w-64 border-r border-border/30 bg-card/45 backdrop-blur-md flex flex-col hidden md:flex">
         <div className="p-4 border-b border-border/50 flex items-center justify-between">
@@ -72,6 +73,6 @@ export default async function ChatLayout({ children }: { children: React.ReactNo
       <div className="flex-1 flex flex-col relative">
         {children}
       </div>
-    </div>
+    </ChatLayoutContainer>
   );
 }

@@ -36,15 +36,17 @@ export default function UploadPYQPage() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("You must be logged in to upload PYQs.");
 
-      // 1. Upload File to Storage (using notes bucket or creating a pyqs bucket - we use notes bucket or books since books/notes public. Wait! Let's check schema: notes bucket is public.)
-      // Actually we have public.notes bucket, public.books bucket. There is no pyq bucket. Let's use notes bucket for simplicity!
+      // 1. Upload File to Storage
       const fileExt = file.name.split('.').pop();
       const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
       const filePath = `${user.id}/${fileName}`;
 
       const { error: uploadError } = await supabase.storage
         .from('notes')
-        .upload(filePath, file);
+        .upload(filePath, file, {
+          contentType: 'application/pdf',
+          upsert: false
+        });
 
       if (uploadError) throw uploadError;
 

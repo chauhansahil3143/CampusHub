@@ -43,7 +43,10 @@ export default function UploadBookPage() {
 
       const { error: uploadError } = await supabase.storage
         .from('books')
-        .upload(filePath, file);
+        .upload(filePath, file, {
+          contentType: 'application/pdf',
+          upsert: false
+        });
 
       if (uploadError) throw uploadError;
 

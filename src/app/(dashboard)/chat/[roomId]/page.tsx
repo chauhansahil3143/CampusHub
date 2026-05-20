@@ -50,7 +50,7 @@ export default async function ChatRoomPage({ params }: { params: Promise<{ roomI
     .limit(100);
 
   return (
-    <div className="flex flex-col h-full bg-background relative">
+    <div className="flex-1 flex flex-col bg-background relative">
       <div className="p-4 border-b border-border/50 bg-background/80 backdrop-blur-md z-10 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Link href="/chat" className="md:hidden p-1.5 hover:bg-muted rounded-lg transition-colors text-muted-foreground mr-1">

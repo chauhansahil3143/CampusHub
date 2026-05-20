@@ -70,7 +70,10 @@ export default function UnifiedUploadPage() {
 
       const { error: uploadError } = await supabase.storage
         .from('notes')
-        .upload(filePath, file);
+        .upload(filePath, file, {
+          contentType: 'application/pdf',
+          upsert: false
+        });
 
       if (uploadError) throw uploadError;
 
